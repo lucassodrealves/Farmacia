@@ -57,17 +57,29 @@ public class CategoriaController extends Categoria {
 	@PutMapping
 	public ResponseEntity<Categoria> putCategoria(@RequestBody @Valid Categoria categoria){
 	      return repositoryCategoria.findById(categoria.getId())
-		  .map(resultado -> ResponseEntity.ok(repositoryCategoria.save(resultado)))
+		  .map(resultado -> ResponseEntity.ok(repositoryCategoria.save(categoria)))
 		  .orElse(ResponseEntity.notFound().build());
 		
 		
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCategoria(@PathVariable Long id){
-		repositoryCategoria.deleteById(id);
 		return repositoryCategoria.findById(id)
-	    .map(resultado -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(null))
+	    .map(resultado -> {
+	    	repositoryCategoria.deleteById(id);
+	    	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+	    })
 	    .orElse(ResponseEntity.notFound().build());
+		
+		/*if( ResponseEntity.existsById(id==true))
+		    repositoryCategoria.deleteById(id);
+		    ResponseEntity.status(HttpStatus.NO_CONTENT).body(null));
+		    else {
+		    ResponseEntity.notFound().build());
+		    */
+		
+		
+		
 	}
 	
 	

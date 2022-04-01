@@ -19,16 +19,12 @@ public class Produto {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id; 
 
-	
+	@Size(min=1,max=99,message="O nome da marca tem de ter entre um e noventa e nove carácteres")
 	private String marca;
 	
 	@NotNull(message="O atributo nome não pode ser nulo.Ele é obrigatório.")
 	@Size(min=2,max=99,message="O atributo nome tem de ter no mínimo um e no máximo noventa e nove carácteres")
 	private String nome;
-	
-	
-	@NotNull(message="O atributo preço não pode ser nulo.Tem de preenchê-lo")
-	private double preco;
 	
 	@ManyToOne
 	@JsonIgnoreProperties("produto")
@@ -58,13 +54,6 @@ public class Produto {
 		this.nome = nome;
 	}
 
-	public double getPreco() {
-		return preco;
-	}
-
-	public void setPreco(double preco) {
-		this.preco = preco;
-	}
 
 	public Categoria getCategoria() {
 		return categoria;

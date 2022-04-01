@@ -52,17 +52,21 @@ public class ProdutoController extends Produto {
 	
 	@PostMapping
 	public ResponseEntity<Produto> postProduto(@RequestBody @Valid Produto produto){
-		return repositoryProduto.findById(produto.getCategoria().getId())
-		.map(resultado -> ResponseEntity.ok(repositoryProduto.save(resultado)))
+		if(repositoryCategoria.existsById(produto.getCategoria().getId())) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(repositoryProduto.save(produto));
+			}else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);/*return repositoryProduto.findById(produto.getCategoria().getId())
+		.map(resultado -> ResponseEntity.status(HttpStatus.CREATED).body(repositoryProduto.save(produto)))
 		.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+		*/
 		
-		
+	}
 	}
 	
 	@PutMapping
 	public ResponseEntity<Produto> putProduto(@RequestBody @Valid Produto produto){
 		return repositoryProduto.findById(produto.getId())
-		.map(resultado -> ResponseEntity.ok(repositoryProduto.save(resultado)))
+		.map(resultado -> ResponseEntity.ok(repositoryProduto.save(produto)))
 		.orElse(ResponseEntity.notFound().build());
 		
 		
@@ -70,9 +74,11 @@ public class ProdutoController extends Produto {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteProduto(@PathVariable Long id){
-		repositoryProduto.deleteById(id);
 		return repositoryProduto.findById(id)
-		.map(resultado -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(null))
+		.map(resultado -> {
+			repositoryProduto.deleteById(id);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		})
 		.orElse(ResponseEntity.notFound().build());
 		
 	}
